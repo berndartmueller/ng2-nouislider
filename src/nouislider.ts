@@ -1,4 +1,3 @@
-import * as noUiSlider from 'nouislider';
 import {
   Component,
   ElementRef,
@@ -14,6 +13,8 @@ import {
   FormControl,
   NG_VALUE_ACCESSOR
 } from '@angular/forms';
+
+declare var noUiSlider: any;
 
 export function toValue(value: string[]): number|number[] {
   if (value.length == 1) {
