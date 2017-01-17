@@ -5,6 +5,8 @@ import {
   forwardRef,
   Input,
   OnInit,
+  OnChanges,
+  SimpleChanges,
   Output,
   NgModule,
 } from '@angular/core';
@@ -14,7 +16,7 @@ import {
   NG_VALUE_ACCESSOR
 } from '@angular/forms';
 
-declare var noUiSlider: any;
+import * as noUiSlider from 'nouislider';
 
 export function toValue(value: string[]): number|number[] {
   if (value.length == 1) {
@@ -63,7 +65,7 @@ export class DefaultFormatter implements NouiFormatter {
     }
   ]
 })
-export class NouisliderComponent implements ControlValueAccessor, OnInit {
+export class NouisliderComponent implements ControlValueAccessor, OnInit, OnChanges {
 
   public slider: any;
   public handles: any[];
@@ -95,6 +97,18 @@ export class NouisliderComponent implements ControlValueAccessor, OnInit {
   constructor(private el: ElementRef) { }
 
   ngOnInit(): void {
+    this.init();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    // destory and re-create slider when config input changes
+    if (changes['config'] && changes['config'].currentValue !== changes['config'].previousValue && typeof this.slider !== 'undefined') {
+      this.slider.destroy();
+      this.init();
+    }
+  }
+
+  init() {
     let inputsConfig = JSON.parse(JSON.stringify({
       behaviour: this.behaviour,
       connect: this.connect,
